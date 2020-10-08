@@ -1,37 +1,42 @@
 $(document).ready(function() {
 	
 	$('.assignbook').click(function(e){
-			e.preventDefault();
-		
-			$(document).ready(function() {
+		e.preventDefault();
+	   $.get('create',function(data){
+			$('#assignbook').modal('show')
+				 .find('#assignbookContent')
+				 .html(data);
 	
-				$('.assignbook').click(function(e){
-						e.preventDefault();
-				   $.get('assign/assignbook',function(data){
-						$('#assignbook').modal('show')
-							 .find('#assignbookContent')
-							 .html(data);
-					});
+				});
 				});
 
 				$('.addauthor').click(function(e){
 					e.preventDefault();
-				   $.get('book/addauthor',function(data){
+				   $.get('addauthor',function(data){
 						$('#addauthor').modal('show')
 							 .find('#addauthorContent')
 						 .html(data);
 				});
+
+			});
 				$('.returnbook').click(function(e){
 					e.preventDefault();
-				   $.get('book/returnbook',function(data){
+					var id = $(this).attr("val");
+				   $.get('returnbook?id='+id,function(data){
 						$('#returnbook').modal('show')
 							 .find('#returnbookContent')
-						 .html(data);
-				});
-			});
-			});
+							 .html(data);
+				
+							});
+							});
+				$('.borrowbook').click(function(e){
+					e.preventDefault();
+					  $.get('borrowbook',function(data){
+					$('#borrowbook').modal('show')
+					 .find('#borrowbookContent')
+					 .html(data);
+							});
 			
-	});
-	
-});
+						});
+		
 });

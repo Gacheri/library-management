@@ -1,7 +1,6 @@
 <?php
 
 namespace frontend\controllers;
-
 use Yii;
 use frontend\models\Book;
 use frontend\models\BookSearch;
@@ -66,14 +65,14 @@ class BookController extends Controller
      */
     public function actionCreate()
     {
-        if( \Yii::$app->user->can( 'create-book' ))
+        //if( \Yii::$app->user->can( 'create-book' ))
         {
             $model = new Book();
             $bookauthor = New Bookauthor();
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                $authorId = Yii::$app->request->post()['BookAuthor']['authorId'];
+                $authorId = Yii::$app->request->post()['Bookauthor']['authorId'];
                 $bookId = $model->bookId;
-                if($this->bookauthors($authorId,$bookId)){
+                if($this->actionBookauthor($authorId,$bookId)){
                     return $this->redirect(['index']);
                 }
                 return $this->redirect(['create']);
@@ -83,12 +82,12 @@ class BookController extends Controller
                 'bookAuthor'=>$bookauthor
             ]);
         }
-        else{
+        /*else{
             throw new ForbiddenHttpException();
-        }
+        }*/
     }
  
-    public function bookauthors($authorId,$bookId){
+    public function actionBookauthor($authorId,$bookId){
         $model = New Bookauthor();
         $data= array('Bookauthor'=>['bookId'=>$bookId,'authorId'=>$authorId]);
         
@@ -113,28 +112,6 @@ class BookController extends Controller
             'model' => $model,
         ]);
     }
-
-    public function actionReturnbook()
-    {
-        $model = new \frontend\models\Book();
-        
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->validate()) {
-                return $this->redirect(['create']);
-            }
-        }
-        
-        return $this->renderAjax('returnbook', [
-            'model' => $model,
-        ]);
-    }
-
-    public function actionBookAuthors(){
-
-
-
-    }
-
     /**
      * Updates an existing Book model.
      * If update is successful, the browser will be redirected to the 'view' page.
