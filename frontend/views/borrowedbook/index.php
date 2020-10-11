@@ -18,7 +18,7 @@ $this->title = 'PEAK LIBRARY MANAGEMENT SYSTEM';
 $totalstudents= Student::find()->asArray()->all();
 $totalBooks=Book::find()->asArray()->all();
 $borrowedBooks=Borrowedbook::find()->where(['actualReturnDate'=>NULL])->asArray()->all();
-$overdueBooks=Borrowedbook::find()->where('expectedReturnDate' < 'actualReturnDate');
+
 ?>
 <div class="row">
         <div class="col-md-3 col-sm-6 col-xs-12">
@@ -124,7 +124,7 @@ $overdueBooks=Borrowedbook::find()->where('expectedReturnDate' < 'actualReturnDa
                         'actualReturnDate',
                         
                         [
-                          
+
                             'label'=>'Return Book',
                             'format' => 'raw',
                             'value' => function ($dataProvider) {
@@ -133,29 +133,26 @@ $overdueBooks=Borrowedbook::find()->where('expectedReturnDate' < 'actualReturnDa
                             
                         ],
 
-                        [
-                          'label'=>'Status',
-                          'format' => 'raw',
-                          'value' => function ($dataProvider) {
-                              $bookStatus = Book::find()->where(['bookId'=>$dataProvider->bookId])->One();
-                              if($bookStatus->status == 0){
-                                  $status = 'Available';
-                              }elseif ($bookStatus->status == 1){
-                                  $status = 'Issued';
-                              }elseif ($bookStatus->status == 2){
-                                  $status = 'Pending';
-                              }
-                              return '<span class="btn btn-info">'.$status.'</span>';
-                          },
-                          
-                      ],
+                        
             
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
                 ]); }?>
 
 <?php if(Yii::$app->user->can('student')){?>
-<h1>BORROWED BOOKS TABLE</h1>
+<div class="box box-info">
+            <div class="box-header with-border" style='padding-top:10px;'>
+              <div style="text-align: center;">
+                  <h3 class="box-title" style='padding:5px;'><?= Html::encode('Borrowed Books Table') ?></h3>
+              </div>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
     <?= GridView::widget([
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,

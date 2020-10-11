@@ -13,8 +13,6 @@ $books = ArrayHelper::map(Book::find()->where(['status'=>0])->all(), 'bookId', '
 ?>
 <div class="borrowed-book-form">
     <?php $form = ActiveForm::begin(['id' => 'bb-create']); ?>
-    
-    
     <?= $form->field($model, 'studentId')->dropDownList($sudents,['disabled' => false]) ?>
     <?= $form->field($model, 'bookId')->dropDownList($books,['disabled' => false]) ?>
     <?= $form->field($model, 'borrowDate')->hiddenInput(['value'=>date('yy/m/d')])->label(false) ?>

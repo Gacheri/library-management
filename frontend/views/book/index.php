@@ -11,6 +11,8 @@ use yii\bootstrap\modal;
 
 $this->title = 'Books';
 $this->params['breadcrumbs'][] = $this->title;
+$status='status';
+
 ?>
 <div class="box box-info">
             <div class="box-header with-border">
@@ -37,9 +39,50 @@ $this->params['breadcrumbs'][] = $this->title;
             'bookName',
             'referenceNo',
             'publisher',
-            'status',
+    
+           /* [
+              'label'=>'Book Status',
+              'format' => 'raw',
+              'value' => function ($dataProvider) {
+                $status='status';
+                $bookstatus = Book::find()->where(['bookId'=>$dataProvider->bookId])->one();
+                if($bookstatus->status == 0){
+                  $status = 'Available';
+                  return '<span class="btn btn-info">'.$status.'</span>';
+                }elseif ($bookstatus->status == 1) {
+                  $status = 'Issued';
+                  return '<span class="btn btn-success">'.$status.'</span>';
+                }elseif ($bookstatus->status == 2) {
+                  $status = 'Pending';
+                  return '<span class="btn btn-danger">'.$status.'</span>';
+                }
+              // return '<span class="btn btn-info">'.$status.'</span>';
+                },
+            ],*/
+
+           [
+              'label'=>'Status',
+              'format' => 'raw',
+              'value' => function ($dataProvider) {
+                  $status='status';
+                  $bookStatus = Book::find()->where(['bookId'=>$dataProvider->bookId])->One();
+                  if($bookStatus->status == 0){
+                      $status = 'Borrow';
+                      return '<span class="btn btn-primary borrowbook">'.$status.'</span>';
+                  }elseif ($bookStatus->status == 1){
+                      $status = 'Issued';
+                      return '<span class="btn btn-success disabled ">'.$status.'</span>';
+                  }elseif ($bookStatus->status == 2){
+                      $status = 'Pending';
+                  }
+                  return '<span class="btn btn-info">'.$status.'</span>';
+              },
+              
+          ],
+
             ['class' => 'yii\grid\ActionColumn'],
         ],
+
     ]);?>
     <?php
         Modal::begin([
@@ -51,3 +94,12 @@ $this->params['breadcrumbs'][] = $this->title;
         Modal::end();
       ?>
      
+     <?php
+ Modal::begin([
+            'header'=>'<h4>Borrow A Book</h4>',
+            'id'=>'borrowbook',
+            'size'=>'modal-lg'
+            ]);
+        echo "<div id='borrowbookContent'></div>";
+        Modal::end();
+ ?>

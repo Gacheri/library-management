@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 use Yii;
 use frontend\models\Book;
+use frontend\models\Borrowedbook;
+use frontend\models\BorrowedbookSearch;
 use frontend\models\BookSearch;
 use frontend\models\Bookauthor;
 use yii\web\Controller;
@@ -38,6 +40,7 @@ class BookController extends Controller
     {
         $searchModel = new BookSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -112,7 +115,30 @@ class BookController extends Controller
             'model' => $model,
         ]);
     }
-    /**
+
+    public function actionBorrowbook()
+{
+    $model = new \frontend\models\Borrowedbook();
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($this->borrowUpdate($model->bookId)) {
+            // form inputs are valid, do something here
+            return $this->redirect(['index']);
+        }
+    }
+    return $this->renderAjax('borrowbook', [
+        'model' => $model,
+        
+    ]);
+}
+   
+public function bookUpdate($bookId){
+    $command = \Yii::$app->db->createCommand('UPDATE book SET status=1 WHERE bookId='.$bookId);
+    $command->execute();
+    return true;
+ }
+
+
+/**
      * Updates an existing Book model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id

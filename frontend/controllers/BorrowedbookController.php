@@ -40,7 +40,6 @@ class BorrowedbookController extends Controller
     {
         $searchModel = new BorrowedbookSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -106,26 +105,27 @@ class BorrowedbookController extends Controller
         /*else{
             throw new ForbiddenHttpException();
         }*/
-    
-    
 
 public function actionBorrowbook()
 {
     $model = new \frontend\models\Borrowedbook();
-    $searchModel = new BorrowedbookSearch();
-    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-    if ($model->load(Yii::$app->request->post())) {
-        if ($model->validate()) {
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($this->borrowUpdate($model->bookId)) {
             // form inputs are valid, do something here
-            return $this->render('index');
+            return $this->redirect(['index']);
         }
     }
-
     return $this->renderAjax('borrowbook', [
         'model' => $model,
+        
     ]);
 }
+
+public function borrowUpdate($bookId){
+    $command = \Yii::$app->db->createCommand('UPDATE book SET status=1 WHERE bookId='.$bookId);
+    $command->execute();
+    return true;
+ }
     /**return $this->renderAjax('assignbook',[
             'dataProvider' => $dataProvider,
             'model'=>$model,
@@ -135,9 +135,9 @@ public function actionBorrowbook()
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id) 
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, $dataProvider);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
